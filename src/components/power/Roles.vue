@@ -23,7 +23,8 @@
                             v-for="(item1, i1) in scope.row.children" :key="item1.id">
                             <!-- 第一列用来渲染一级权限 -->
                             <el-col :span="5">
-                                <el-tag closable @close="removeRightById(scope.row, item1.id)">{{item1.authName}}</el-tag>
+                                <el-tag closable @close="removeRightById(scope.row, item1.id)">{{item1.authName}}
+                                </el-tag>
                                 <i class=" el-icon-caret-right"></i>
                             </el-col>
                             <!-- 第二列用来渲染二级和三级权限 -->
@@ -33,7 +34,8 @@
                                     v-for="(item2, i2) in item1.children" :key="item2.id">
                                     <!-- 二级权限 -->
                                     <el-col :span="6">
-                                        <el-tag type="success" closable @close="removeRightById(scope.row, item2.id)">{{item2.authName}}</el-tag>
+                                        <el-tag type="success" closable @close="removeRightById(scope.row, item2.id)">
+                                            {{item2.authName}}</el-tag>
                                         <i class=" el-icon-caret-right"></i>
                                     </el-col>
                                     <el-col :span="18">
@@ -55,13 +57,14 @@
                     <template slot-scope="scope">
                         <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)">
                             编辑</el-button>
-                        <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeRoleById(scope.row.id)">删除</el-button>
+                        <el-button type="danger" icon="el-icon-delete" size="mini"
+                            @click="removeRoleById(scope.row.id)">删除</el-button>
                         <el-tooltip effect=" dark" content="分配权限" placement="top" :enterable="false" :open-delay="500"
                             :hide-after="3000">
                             <el-button type="warning" icon="el-icon-setting" size="mini"
                                 @click="showSetRightDialog(scope.row)">分配权限
                             </el-button>
-                            </el-tooltip>
+                        </el-tooltip>
                     </template>
                 </el-table-column>
             </el-table>
@@ -99,7 +102,7 @@
         <!-- 编辑角色的Dialog对话框 -->
         <el-dialog title="修改角色信息" :visible.sync="editRoleDialogVisible" width="40%" @close="editRoleDialogClosed">
             <!-- 修改的dialog内容主体区 -->
-            <el-form :model="editForm" ref="editFormRef" label-width="80px">
+            <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="80px">
                 <el-form-item label="角色名称" prop="roleName">
                     <el-input v-model="editForm.roleName"></el-input>
                 </el-form-item>
@@ -130,9 +133,16 @@
                 defKeys: [],
                 //修改角色时用来暂时存放信息的数组
                 editForm: [],
+                //添加角色时编辑框中的内容展示和修改所用对象
                 addForm: {
                     roleName: '',
                     roleDesc: ''
+                },
+                //验证编辑时输入的内容是否符合规则
+                editFormRules: {
+                    roleName: [
+                        {required: true, message: "请输入角色名", trigger: "blur" }
+                    ]
                 },
                 //树型控件的展示属性绑定对象,children代表层级，label代表展示的名字
                 treeProps: {
@@ -215,26 +225,26 @@
                     this.$message.success('更新角色信息成功')
                 }
             },
-             
+
             //根据id删除角色信息的方法
             async removeRoleById(id) {
                 //弹框询问用户是否删除数据
-                const confirmResult =  await this.$confirm('此操作将永久删除该角色, 是否继续？', '提示', {
+                const confirmResult = await this.$confirm('此操作将永久删除该角色, 是否继续？', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).catch(err => err)
                 //如果用户点击确认，返回值为字符串‘confirm’
                 //如果用户点击取消，返回值为字符串‘cancel’
-                if(confirmResult !== 'confirm'){
-                    return this.$message.queryInfo('已取消删除该角色')
+                if (confirmResult !== 'confirm') {
+                    return this.$message('已取消删除该角色')
                 }
-                 const {data: res} = await this.$http.delete('roles/' + id)
-                 if(res.meta.status !== 200){
-                    return this.$message.error('删除角色信息')
-                 }
-                 this.$message.success('删除角色成功')
-                 this.getRolesList()
+                const { data: res } = await this.$http.delete('roles/' + id)
+                if (res.meta.status !== 200) {
+                    return this.$message.error('删除角色信息失败')
+                }
+                this.$message.success('删除角色成功')
+                this.getRolesList()
             },
 
             //根据权限id来删除该权限
@@ -300,7 +310,7 @@
                 if (res.meta.status !== 200) {
                     return this.$message.error('分配权限失败')
                 }
-                return this.$message.success('分配权限成功')
+                this.$message.success('分配权限成功')
                 this.getRolesList()
                 this.setRightDialogVisible = false
             }

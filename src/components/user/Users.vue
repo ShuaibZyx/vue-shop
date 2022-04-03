@@ -206,7 +206,7 @@ export default {
         //当前页码
         pagenum: 1,
         //当前每页显示多少条数据
-        pagesize: 2,
+        pagesize: 5,
       },
       //需要被分配角色的用户信息
       userInfo: {},
@@ -297,9 +297,10 @@ export default {
 
     //监听pagesize改变的事件
     handleSizeChange(newSize) {
+      const temporaryTotal = this.queryInfo.pagesize * this.queryInfo.pagenum
       this.queryInfo.pagesize = newSize;
       //切换分页大小时不将pagenum改为1将会导致切换完后显示为空
-      this.queryInfo.pagenum = 1;
+      this.queryInfo.pagenum = (temporaryTotal/this.queryInfo.pagesize) + 1;
       this.getUserList();
     },
 
@@ -401,7 +402,7 @@ export default {
       //如果用户点击确认，返回值为字符串‘confirm’
       //如果用户点击取消，返回值为字符串‘cancel’
       if (confirmResult !== "confirm") {
-        return this.$message.queryInfo("已经取消删除");
+        return this.$message("已经取消删除");
       }
       const { data: res } = await this.$http.delete("users/" + id);
       if (res.meta.status !== 200) {
