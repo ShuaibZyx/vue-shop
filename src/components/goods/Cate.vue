@@ -229,6 +229,7 @@
                     this.addCateForm.cat_pid = 0
                     this.addCateForm.cat_level = 0
                 }
+                this.$refs.elCascader.dropDownVisible = false
             },
 
             //点击按钮，添加新的分类

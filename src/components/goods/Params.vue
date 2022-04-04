@@ -118,7 +118,7 @@
         <!-- 修改参数对话框 -->
         <el-dialog :title="'添加' + titleText" :visible.sync="editDialogVisible" width="40%" @close="editDialogClosed">
             <!-- 添加参数的输入框 -->
-            <el-form :model="editForm" :rules="editFormRules" ref=" @click=""" label-width="100px">
+            <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="100px">
                 <el-form-item :label="titleText" prop="attr_name">
                     <el-input v-model="editForm.attr_name"></el-input>
                 </el-form-item>

@@ -20,6 +20,7 @@
             v-model="loginForm.username"
             type="text"
             prefix-icon="el-icon-s-custom"
+            @keyup.enter.native="login"
           ></el-input>
         </el-form-item>
 
@@ -29,6 +30,7 @@
             v-model="loginForm.password"
             type="password"
             prefix-icon="el-icon-lock"
+            @keyup.enter.native="login"
           ></el-input>
         </el-form-item>
 
