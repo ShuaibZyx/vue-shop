@@ -226,6 +226,7 @@
                 } else {
                     this.getParamsData()
                 }
+                this.$refs.elCascader.dropDownVisible = false
             },
 
 
